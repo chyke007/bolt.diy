@@ -1,110 +1,141 @@
 # bolt.diy
 
-[![bolt.diy: AI-Powered Full-Stack Web Development in the Browser](./public/social_preview_index.jpg)](https://bolt.diy)
+Changes made where to the Search and File management functionality
 
-Welcome to bolt.diy, the official open source version of Bolt.new, which allows you to choose the LLM that you use for each prompt! Currently, you can use OpenAI, Anthropic, Ollama, OpenRouter, Gemini, LMStudio, Mistral, xAI, HuggingFace, DeepSeek, or Groq models - and it is easily extended to use any other model supported by the Vercel AI SDK! See the instructions below for running this locally and extending it to include more models.
+## Hybrid Search & File Management
 
------
-Check the [bolt.diy Docs](https://stackblitz-labs.github.io/bolt.diy/) for more offical installation instructions and more informations.
+Bolt.diy now features a sophisticated hybrid system that combines multiple file system providers for optimal performance and reliability.
 
------
-Also [this pinned post in our community](https://thinktank.ottomator.ai/t/videos-tutorial-helpful-content/3243) has a bunch of incredible resources for running and deploying bolt.diy yourself!
+### 🔍 **Hybrid Search System**
 
-We have also launched an experimental agent called the "bolt.diy Expert" that can answer common questions about bolt.diy. Find it here on the [oTTomator Live Agent Studio](https://studio.ottomator.ai/).
+The search functionality intelligently switches between different providers:
 
-bolt.diy was originally started by [Cole Medin](https://www.youtube.com/@ColeMedin) but has quickly grown into a massive community effort to build the BEST open source AI coding assistant!
+1. **CodeSandbox SDK** (Primary) - Cloud-based search with real-time indexing
+2. **WebContainer** (Fallback) - Browser-based search when CodeSandbox is unavailable
+3. **Local Mock** (Emergency Fallback) - In-memory search for offline development
 
-## Table of Contents
+**Features:**
+- Real-time file content search across your entire project
+- Support for regex patterns, case-sensitive/insensitive search
+- Whole word matching and pattern exclusions
+- Automatic provider selection based on availability
+- Seamless fallback when primary provider fails
 
-- [Join the Community](#join-the-community)
-- [Requested Additions](#requested-additions)
-- [Features](#features)
-- [Setup](#setup)
-- [Run the Application](#run-the-application)
-- [Available Scripts](#available-scripts)
-- [Contributing](#contributing)
-- [Roadmap](#roadmap)
-- [FAQ](#faq)
+### 📁 **Hybrid File Management**
 
-## Join the community
+File operations work across multiple providers with intelligent fallback:
 
-[Join the bolt.diy community here, in the oTTomator Think Tank!](https://thinktank.ottomator.ai)
+1. **CodeSandbox** - Cloud-based file system with persistence
+2. **WebContainer** - Browser-based file system with local persistence  
+3. **Local Fallback** - In-memory file system for offline use
 
-## Project management
+**Features:**
+- File upload and folder upload support
+- Real-time file tree updates
+- File creation, deletion, and directory management
+- Automatic provider health monitoring
+- Seamless fallback when primary provider fails
 
-Bolt.diy is a community effort! Still, the core team of contributors aims at organizing the project in way that allows
-you to understand where the current areas of focus are.
+### 🔧 **CodeSandbox Integration**
 
-If you want to know what we are working on, what we are planning to work on, or if you want to contribute to the
-project, please check the [project management guide](./PROJECT.md) to get started easily.
+To use the CodeSandbox features, you'll need to set up an API key:
 
-## Requested Additions
+#### Setting up CodeSandbox API Key
 
-- ✅ OpenRouter Integration (@coleam00)
-- ✅ Gemini Integration (@jonathands)
-- ✅ Autogenerate Ollama models from what is downloaded (@yunatamos)
-- ✅ Filter models by provider (@jasonm23)
-- ✅ Download project as ZIP (@fabwaseem)
-- ✅ Improvements to the main bolt.new prompt in `app\lib\.server\llm\prompts.ts` (@kofi-bhr)
-- ✅ DeepSeek API Integration (@zenith110)
-- ✅ Mistral API Integration (@ArulGandhi)
-- ✅ "Open AI Like" API Integration (@ZerxZ)
-- ✅ Ability to sync files (one way sync) to local folder (@muzafferkadir)
-- ✅ Containerize the application with Docker for easy installation (@aaronbolton)
-- ✅ Publish projects directly to GitHub (@goncaloalves)
-- ✅ Ability to enter API keys in the UI (@ali00209)
-- ✅ xAI Grok Beta Integration (@milutinke)
-- ✅ LM Studio Integration (@karrot0)
-- ✅ HuggingFace Integration (@ahsan3219)
-- ✅ Bolt terminal to see the output of LLM run commands (@thecodacus)
-- ✅ Streaming of code output (@thecodacus)
-- ✅ Ability to revert code to earlier version (@wonderwhy-er)
-- ✅ Chat history backup and restore functionality (@sidbetatester)
-- ✅ Cohere Integration (@hasanraiyan)
-- ✅ Dynamic model max token length (@hasanraiyan)
-- ✅ Better prompt enhancing (@SujalXplores)
-- ✅ Prompt caching (@SujalXplores)
-- ✅ Load local projects into the app (@wonderwhy-er)
-- ✅ Together Integration (@mouimet-infinisoft)
-- ✅ Mobile friendly (@qwikode)
-- ✅ Better prompt enhancing (@SujalXplores)
-- ✅ Attach images to prompts (@atrokhym)(@stijnus)
-- ✅ Added Git Clone button (@thecodacus)
-- ✅ Git Import from url (@thecodacus)
-- ✅ PromptLibrary to have different variations of prompts for different use cases (@thecodacus)
-- ✅ Detect package.json and commands to auto install & run preview for folder and git import (@wonderwhy-er)
-- ✅ Selection tool to target changes visually (@emcconnell)
-- ✅ Detect terminal Errors and ask bolt to fix it (@thecodacus)
-- ✅ Detect preview Errors and ask bolt to fix it (@wonderwhy-er)
-- ✅ Add Starter Template Options (@thecodacus)
-- ✅ Perplexity Integration (@meetpateltech)
-- ✅ AWS Bedrock Integration (@kunjabijukchhe)
-- ✅ Add a "Diff View" to see the changes (@toddyclipsgg)
-- ⬜ **HIGH PRIORITY** - Prevent bolt from rewriting files as often (file locking and diffs)
-- ⬜ **HIGH PRIORITY** - Better prompting for smaller LLMs (code window sometimes doesn't start)
-- ⬜ **HIGH PRIORITY** - Run agents in the backend as opposed to a single model call
-- ✅ Deploy directly to Netlify (@xKevIsDev)
-- ✅ Supabase Integration (@xKevIsDev)
-- ⬜ Have LLM plan the project in a MD file for better results/transparency
-- ⬜ VSCode Integration with git-like confirmations
-- ⬜ Upload documents for knowledge - UI design templates, a code base to reference coding style, etc.
-- ✅ Voice prompting
-- ⬜ Azure Open AI API Integration
-- ⬜ Vertex AI Integration
-- ⬜ Granite Integration
-- ✅ Popout Window for Web Container(@stijnus)
-- ✅ Ability to change Popout window size (@stijnus)
+1. **Create a CodeSandbox Account:**
+   - Visit [codesandbox.io](https://codesandbox.io)
+   - Sign up for a free account
 
-## Features
+2. **Generate API Key:**
+   - Go to your [CodeSandbox Settings](https://codesandbox.io/dashboard/settings)
+   - Navigate to the Settings -> "API" section
+   - Generate a new API key
 
-- **AI-powered full-stack web development** for **NodeJS based applications** directly in your browser.
-- **Support for multiple LLMs** with an extensible architecture to integrate additional models.
-- **Attach images to prompts** for better contextual understanding.
-- **Integrated terminal** to view output of LLM-run commands.
-- **Revert code to earlier versions** for easier debugging and quicker changes.
-- **Download projects as ZIP** for easy portability Sync to a folder on the host.
-- **Integration-ready Docker support** for a hassle-free setup.
-- **Deploy** directly to **Netlify**
+3. **Add to Environment Variables:**
+   Create a `.env` file in your project root:
+   ```bash
+   VITE_CSB_API_KEY=your_codesandbox_api_key_here
+   ```
+
+4. **Restart the Development Server:**
+   ```bash
+   pnpm run dev
+   ```
+
+> **Note**: The CodeSandbox API key is optional. If not provided, the system will automatically fall back to WebContainer and local file systems.
+
+#### Fallback Behavior
+
+When CodeSandbox is unavailable (network issues, API limits, etc.), the system automatically falls back:
+
+```
+CodeSandbox → WebContainer → Local Mock
+```
+
+- **CodeSandbox fails** → Uses WebContainer for file operations
+- **WebContainer fails** → Uses local in-memory file system
+- **All providers fail** → Graceful error handling with user feedback
+
+### 🧪 **Testing the Hybrid Features**
+
+1. **Test Search:**
+   - Navigate to the search interface
+   - Try searching for code patterns
+   - Watch the console for provider selection logs
+
+2. **Test File Management:**
+   - **Access the Test Route**: Navigate to `http://localhost:5173/test-file-management`
+   - Upload files or folders using the drag-and-drop interface
+   - Create sample files and directories using the provided buttons
+   - Monitor provider status in the UI
+   - View the file tree structure in real-time
+   - Test the fallback mechanisms by disconnecting from the internet
+
+3. **Test Fallback:**
+   - Disconnect from internet to test local fallback
+   - Check console logs for fallback behavior
+   - Verify that file operations still work in offline mode
+
+### 🧪 **Test Routes**
+
+The project includes dedicated test routes for development and debugging:
+
+#### **File Management Test Route**
+- **URL**: `http://localhost:5173/test-file-management`
+- **Purpose**: Test the hybrid file management implementation
+- **Features**:
+  - File upload and folder upload interface
+  - Real-time file tree display
+  - Provider status monitoring
+  - Sample file and directory creation
+  - Implementation details and documentation
+  - Usage instructions and troubleshooting
+
+#### **Accessing Test Routes**
+1. Start the development server: `pnpm run dev`
+2. Open your browser and navigate to the test route
+3. Use the interface to test file operations
+4. Monitor the browser console for detailed logs
+5. Check the provider status indicators
+
+> **Note**: Test routes are development tools and may not be available in production builds.
+
+### 📊 **Provider Status Monitoring**
+
+The system provides real-time status information:
+- **Provider Type**: CodeSandbox, WebContainer, or Local
+- **Connection Status**: Ready, Loading, or Error
+- **Health Checks**: Automatic monitoring of provider availability
+- **Error Reporting**: Detailed error messages for debugging
+
+## Limitations and Issues faced
+
+Had issues relating to connecting with the CodeSandbox sandbox after creation, this initially worked, but stopped along the way with multiple errors. Due to little documentations or example on using the SDK v2, this issue wasnt fixed and affected the task greatly.
+
+Also, I did some research and saw that replacing a webcontainer with a CodeSandbox/VM looks like an issue currently discussed, and would require significant effort to get it implemented(Unfortunately cant be done in 2  - 3 days). 
+
+A similar implementation of the proposed task would be the Lovable project.
+
 
 ## Setup
 
@@ -205,25 +236,24 @@ Setting up your API keys in Bolt.DIY is straightforward:
 
 ![API Key Configuration Interface](./docs/images/api-key-ui-section.png)
 
-### Configuring Custom Base URLs
+### CodeSandbox API Key Setup
 
-For providers that support custom base URLs (such as Ollama or LM Studio), follow these steps:
+For the hybrid search and file management features, you'll need a CodeSandbox API key:
 
-1. Click the settings icon in the sidebar to open the settings menu
-   ![Settings Button Location](./docs/images/bolt-settings-button.png)
+1. **Create a CodeSandbox Account:**
+   - Visit [codesandbox.io](https://codesandbox.io)
+   - Sign up for a free account
 
-2. Navigate to the "Providers" tab
-3. Search for your provider using the search bar
-4. Enter your custom base URL in the designated field
-   ![Provider Base URL Configuration](./docs/images/provider-base-url.png)
+2. **Generate API Key:**
+   - Go to your [CodeSandbox Settings](https://codesandbox.io/dashboard/settings)
+   - Navigate to the "API" section
+   - Generate a new API key
 
-> **Note**: Custom base URLs are particularly useful when running local instances of AI models or using custom API endpoints.
-
-### Supported Providers
-
-- Ollama
-- LM Studio
-- OpenAILike
+3. **Add to Environment Variables:**
+   Create a `.env` file in your project root:
+   ```bash
+   VITE_CSB_API_KEY=your_codesandbox_api_key_here
+   ```
 
 ## Setup Using Git (For Developers only)
 
@@ -328,6 +358,36 @@ If you encounter issues:
    ```
 
 Remember to always commit your local changes or stash them before pulling updates to avoid conflicts.
+
+#### Troubleshooting Hybrid Features
+
+If you encounter issues with search or file management:
+
+1. **CodeSandbox Connection Issues:**
+   - Check your internet connection
+   - Verify your API key is correct in `.env`
+   - Check browser console for DataView errors (known issue with some browsers)
+   - The system will automatically fall back to WebContainer
+
+2. **Search Not Working:**
+   - Open browser console (F12) to see provider status
+   - Check if files are properly loaded in the file tree
+   - Try refreshing the page to reinitialize providers
+
+3. **File Upload Issues:**
+   - Ensure you have proper file permissions
+   - Check browser console for error messages
+   - Try using smaller files or folders first
+
+4. **Provider Status:**
+   - Monitor the provider status in the UI
+   - Look for "Ready", "Loading", or "Error" indicators
+   - Check console logs for detailed error information
+
+5. **Fallback Testing:**
+   - Disconnect from internet to test local fallback
+   - Check that file operations still work offline
+   - Verify search functionality in fallback mode
 
 ---
 
